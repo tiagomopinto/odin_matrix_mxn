@@ -30,6 +30,20 @@ get_val :: #force_inline proc(mat: ^Matrix, row_idx: int, col_idx: int) -> (val:
 	return mat.data[row_idx * mat.cols_num + col_idx]
 }
 
+get_trace :: proc(mat: ^Matrix) -> (res: f64) {
+
+	assert(mat.rows_num == mat.cols_num)
+
+	res = 0.0
+
+	for i in 0 ..< mat.rows_num {
+
+		res += get_val(mat, i, i)
+	}
+
+	return res
+}
+
 get_row :: proc(mat: ^Matrix, row_idx: int, row: []f64) {
 
 	assert(mat.cols_num == len(row))
@@ -79,36 +93,15 @@ make_matrix :: proc(rows_num: int, cols_num: int) -> (mat: ^Matrix) {
 	return mat
 }
 
-assign_matrix_from_3x3 :: proc(mat: ^Matrix, rows_3x3: ..[]^matrix[3, 3]f64) {
+free_matrix :: proc(mat: ^^Matrix) {
 
-	rows_num_3x3 := len(rows_3x3)
-	cols_num_3x3 := len(rows_3x3[0])
+	delete(mat^^.data)
 
-	assert(mat.rows_num == 3 * rows_num_3x3 && mat.cols_num == 3 * cols_num_3x3)
+	mat^^.data = nil
 
-	for row_3x3 in rows_3x3 {
+	free(mat^)
 
-		assert(cols_num_3x3 == len(row_3x3)) // check if all rows have the same length (rectangular or square matrix)
-	}
-
-	for rows_3x3_idx in 0 ..< rows_num_3x3 {
-
-		for i in 0 ..< 3 {
-
-			for cols_3x3_idx in 0 ..< cols_num_3x3 {
-
-				for j in 0 ..< 3 {
-
-					set_val(
-						mat,
-						3 * rows_3x3_idx + i,
-						3 * cols_3x3_idx + j,
-						rows_3x3[rows_3x3_idx][cols_3x3_idx][i, j],
-					)
-				}
-			}
-		}
-	}
+	mat^ = nil
 }
 
 copy_matrix :: proc(m1: ^Matrix, m2: ^Matrix) {
@@ -122,30 +115,6 @@ copy_matrix :: proc(m1: ^Matrix, m2: ^Matrix) {
 			set_val(m2, i, j, get_val(m1, i, j))
 		}
 	}
-}
-
-convert_to_std_matrix_3x3_type :: proc(mat: ^Matrix, mat_std: ^matrix[3, 3]f64) {
-
-	assert(mat.rows_num == 3 && mat.cols_num == 3)
-
-	for i in 0 ..< 3 {
-
-		for j in 0 ..< 3 {
-
-			mat_std[i, j] = get_val(mat, i, j)
-		}
-	}
-}
-
-free_matrix :: proc(mat: ^^Matrix) {
-
-	delete(mat^^.data)
-
-	mat^^.data = nil
-
-	free(mat^)
-
-	mat^ = nil
 }
 
 print_matrix :: proc(mat: ^Matrix) {
@@ -180,18 +149,62 @@ assign_identity_matrix :: proc(mat: ^Matrix) {
 	}
 }
 
-get_trace :: proc(mat: ^Matrix) -> (res: f64) {
+assign_matrix_from_3x3 :: proc(mat: ^Matrix, rows_3x3: ..[]^matrix[3, 3]f64) {
 
-	assert(mat.rows_num == mat.cols_num)
+	rows_num_3x3 := len(rows_3x3)
+	cols_num_3x3 := len(rows_3x3[0])
 
-	res = 0.0
+	assert(mat.rows_num == 3 * rows_num_3x3 && mat.cols_num == 3 * cols_num_3x3)
+
+	for row_3x3 in rows_3x3 {
+
+		assert(cols_num_3x3 == len(row_3x3)) // check if all rows have the same length (rectangular or square matrix)
+	}
+
+	for rows_3x3_idx in 0 ..< rows_num_3x3 {
+
+		for i in 0 ..< 3 {
+
+			for cols_3x3_idx in 0 ..< cols_num_3x3 {
+
+				for j in 0 ..< 3 {
+
+					set_val(
+						mat,
+						3 * rows_3x3_idx + i,
+						3 * cols_3x3_idx + j,
+						rows_3x3[rows_3x3_idx][cols_3x3_idx][i, j],
+					)
+				}
+			}
+		}
+	}
+}
+
+convert_to_std_matrix_3x3_type :: proc(mat: ^Matrix, mat_std: ^matrix[3, 3]f64) {
+
+	assert(mat.rows_num == 3 && mat.cols_num == 3)
+
+	for i in 0 ..< 3 {
+
+		for j in 0 ..< 3 {
+
+			mat_std[i, j] = get_val(mat, i, j)
+		}
+	}
+}
+
+transpose :: proc(mat: ^Matrix, mat_t: ^Matrix) {
+
+	assert(mat.rows_num == mat_t.cols_num && mat.cols_num == mat_t.rows_num)
 
 	for i in 0 ..< mat.rows_num {
 
-		res += get_val(mat, i, i)
-	}
+		for j in 0 ..< mat.cols_num {
 
-	return res
+			set_val(mat_t, j, i, get_val(mat, i, j))
+		}
+	}
 }
 
 sum :: proc(m1: ^Matrix, m2: ^Matrix, m_res: ^Matrix) {
@@ -258,19 +271,6 @@ mult :: proc(m1: ^Matrix, m2: ^Matrix, m_res: ^Matrix) {
 
 				set_val(m_res, i, j, val_old + val_new)
 			}
-		}
-	}
-}
-
-transpose :: proc(mat: ^Matrix, mat_t: ^Matrix) {
-
-	assert(mat.rows_num == mat_t.cols_num && mat.cols_num == mat_t.rows_num)
-
-	for i in 0 ..< mat.rows_num {
-
-		for j in 0 ..< mat.cols_num {
-
-			set_val(mat_t, j, i, get_val(mat, i, j))
 		}
 	}
 }
