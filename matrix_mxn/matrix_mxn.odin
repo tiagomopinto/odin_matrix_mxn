@@ -149,7 +149,7 @@ assign_identity_matrix :: proc(mat: ^Matrix) {
 	}
 }
 
-assign_matrix_from_3x3 :: proc(mat: ^Matrix, rows_3x3: ..[]^matrix[3, 3]f64) {
+assign_matrix_from_std_matrices_3x3 :: proc(mat: ^Matrix, rows_3x3: ..[]^matrix[3, 3]f64) {
 
 	rows_num_3x3 := len(rows_3x3)
 	cols_num_3x3 := len(rows_3x3[0])
