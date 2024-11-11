@@ -50,20 +50,14 @@ get_col :: proc(mat: ^Matrix, col_idx: int, col: []f64) {
 	}
 }
 
-get_diag :: proc(mat: ^Matrix) -> (diag: []f64) {
+get_diag :: proc(mat: ^Matrix, diag: []f64) {
 
-	assert(mat.rows_num == mat.cols_num)
-
-	diag = make([]f64, mat.rows_num)
-
-	check_error(&diag[0], "ERROR: in Matrix: Memory allocation failed for diag in get_diag().")
+	assert(mat.rows_num == mat.cols_num && mat.rows_num == len(diag))
 
 	for i in 0 ..< mat.rows_num {
 
 		diag[i] = get_val(mat, i, i)
 	}
-
-	return diag
 }
 
 make_matrix :: proc(rows_num: int, cols_num: int) -> (mat: ^Matrix) {
