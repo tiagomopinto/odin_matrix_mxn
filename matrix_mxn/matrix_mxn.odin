@@ -170,16 +170,14 @@ assign_null_matrix :: proc(mat: ^Matrix) {
 	}
 }
 
-eye :: proc(size: int) -> (mat: ^Matrix) {
+assign_identity_matrix :: proc(mat: ^Matrix) {
 
-	mat = make_matrix(size, size)
+	assign_null_matrix(mat)
 
-	for i in 0 ..< size {
+	for i in 0 ..< mat.rows_num {
 
-		set_val(mat, i, i, 1)
+		set_val(mat, i, i, 1.0)
 	}
-
-	return mat
 }
 
 trace :: proc(mat: ^Matrix) -> (res: f64) {
@@ -299,8 +297,10 @@ pinv :: proc(mat_a_mxn: ^Matrix) -> (mat_inv_nxm: ^Matrix) {
 	mat_q_nxn := make_matrix(n, n)
 	defer free_matrix(&mat_q_nxn)
 
-	mat_v_nxn := eye(n)
+	mat_v_nxn := make_matrix(n, n)
 	defer free_matrix(&mat_v_nxn)
+
+	assign_identity_matrix(mat_v_nxn)
 
 	w := make([]f64, n)
 	defer delete(w)
