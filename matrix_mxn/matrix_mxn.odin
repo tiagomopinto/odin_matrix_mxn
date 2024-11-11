@@ -145,13 +145,15 @@ convert_to_std_matrix_3x3_type :: proc(mat: ^Matrix, mat_std: ^matrix[3, 3]f64) 
 	}
 }
 
-free_matrix :: proc(mat: ^Matrix) {
+free_matrix :: proc(mat: ^^Matrix) {
 
-	delete(mat.data)
+	delete(mat^^.data)
 
-	free(mat)
+	mat^^.data = nil
 
-	// mat = nil
+	free(mat^)
+
+	mat^ = nil
 }
 
 print_matrix :: proc(mat: ^Matrix) {
@@ -288,22 +290,22 @@ pinv :: proc(mat_a_mxn: ^Matrix) -> (mat_inv_nxm: ^Matrix) {
 	mat_inv_nxm = make_matrix(n, m)
 
 	mat_aux_nxm := make_matrix(n, m)
-	defer free_matrix(mat_aux_nxm)
+	defer free_matrix(&mat_aux_nxm)
 
 	mat_aux1_nxn := zeros(n)
-	defer free_matrix(mat_aux1_nxn)
+	defer free_matrix(&mat_aux1_nxn)
 
 	mat_aux2_nxn := zeros(n)
-	defer free_matrix(mat_aux2_nxn)
+	defer free_matrix(&mat_aux2_nxn)
 
 	mat_aux3_nxn := zeros(n)
-	defer free_matrix(mat_aux3_nxn)
+	defer free_matrix(&mat_aux3_nxn)
 
 	mat_q_nxn := zeros(n)
-	defer free_matrix(mat_q_nxn)
+	defer free_matrix(&mat_q_nxn)
 
 	mat_v_nxn := eye(n)
-	defer free_matrix(mat_v_nxn)
+	defer free_matrix(&mat_v_nxn)
 
 	w := make([]f64, n)
 	defer delete(w)
@@ -376,7 +378,7 @@ pinv :: proc(mat_a_mxn: ^Matrix) -> (mat_inv_nxm: ^Matrix) {
 	}
 
 	mat_aux_mxn := make_matrix(m, n) // E matrix
-	defer free_matrix(mat_aux_mxn)
+	defer free_matrix(&mat_aux_mxn)
 
 	for i in 0 ..< max {
 
@@ -389,13 +391,13 @@ pinv :: proc(mat_a_mxn: ^Matrix) -> (mat_inv_nxm: ^Matrix) {
 	}
 
 	mat_et_nxm := make_matrix(n, m)
-	defer free_matrix(mat_et_nxm)
+	defer free_matrix(&mat_et_nxm)
 
 	mat_u_mxm := make_matrix(m, m)
-	defer free_matrix(mat_u_mxm)
+	defer free_matrix(&mat_u_mxm)
 
 	mat_ut_mxm := make_matrix(m, m)
-	defer free_matrix(mat_ut_mxm)
+	defer free_matrix(&mat_ut_mxm)
 
 	transpose(mat_aux_mxn, mat_et_nxm) // E_t
 
