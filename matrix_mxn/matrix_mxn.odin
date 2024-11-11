@@ -117,6 +117,19 @@ copy_matrix :: proc(m1: ^Matrix, m2: ^Matrix) {
 	}
 }
 
+copy_matrix_to_std_matrix_3x3 :: proc(mat: ^Matrix, mat_std: ^matrix[3, 3]f64) {
+
+	assert(mat.rows_num == 3 && mat.cols_num == 3)
+
+	for i in 0 ..< 3 {
+
+		for j in 0 ..< 3 {
+
+			mat_std[i, j] = get_val(mat, i, j)
+		}
+	}
+}
+
 print_matrix :: proc(mat: ^Matrix) {
 
 	for i in 0 ..< mat.rows_num {
@@ -177,19 +190,6 @@ assign_matrix_from_std_matrices_3x3 :: proc(mat: ^Matrix, rows_3x3: ..[]^matrix[
 					)
 				}
 			}
-		}
-	}
-}
-
-convert_to_std_matrix_3x3_type :: proc(mat: ^Matrix, mat_std: ^matrix[3, 3]f64) {
-
-	assert(mat.rows_num == 3 && mat.cols_num == 3)
-
-	for i in 0 ..< 3 {
-
-		for j in 0 ..< 3 {
-
-			mat_std[i, j] = get_val(mat, i, j)
 		}
 	}
 }
