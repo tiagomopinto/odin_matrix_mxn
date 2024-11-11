@@ -186,14 +186,13 @@ eye :: proc(size: int) -> (mat: ^Matrix) {
 
 trace :: proc(mat: ^Matrix) -> (res: f64) {
 
-	diag := get_diag(mat)
-	defer delete(diag)
+	assert(mat.rows_num == mat.cols_num)
 
 	res = 0.0
 
-	for val in diag {
+	for i in 0 ..< mat.rows_num {
 
-		res += val
+		res += get_val(mat, i, i)
 	}
 
 	return res
