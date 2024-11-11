@@ -159,11 +159,15 @@ print_matrix :: proc(mat: ^Matrix) {
 	}
 }
 
-zeros :: proc(size: int) -> (mat: ^Matrix) {
+assign_null_matrix :: proc(mat: ^Matrix) {
 
-	mat = make_matrix(size, size)
+	for i in 0 ..< mat.rows_num {
 
-	return mat
+		for j in 0 ..< mat.cols_num {
+
+			set_val(mat, i, j, 0.0)
+		}
+	}
 }
 
 eye :: proc(size: int) -> (mat: ^Matrix) {
@@ -283,16 +287,16 @@ pinv :: proc(mat_a_mxn: ^Matrix) -> (mat_inv_nxm: ^Matrix) {
 	mat_aux_nxm := make_matrix(n, m)
 	defer free_matrix(&mat_aux_nxm)
 
-	mat_aux1_nxn := zeros(n)
+	mat_aux1_nxn := make_matrix(n, n)
 	defer free_matrix(&mat_aux1_nxn)
 
-	mat_aux2_nxn := zeros(n)
+	mat_aux2_nxn := make_matrix(n, n)
 	defer free_matrix(&mat_aux2_nxn)
 
-	mat_aux3_nxn := zeros(n)
+	mat_aux3_nxn := make_matrix(n, n)
 	defer free_matrix(&mat_aux3_nxn)
 
-	mat_q_nxn := zeros(n)
+	mat_q_nxn := make_matrix(n, n)
 	defer free_matrix(&mat_q_nxn)
 
 	mat_v_nxn := eye(n)
