@@ -16,9 +16,11 @@ main :: proc() {
 		3, 2, 1, 
 	}
 
-	m_9x6 := mtx.make_matrix_from_3x3({&m1, &m2}, {&m1, &m2}, {&m1, &m2})
+	m_9x6 := mtx.make_matrix(9, 6)
 
 	defer mtx.free_matrix(&m_9x6)
+
+	mtx.assign_matrix_from_3x3(m_9x6, {&m1, &m2}, {&m1, &m2}, {&m1, &m2})
 
 	m_inv_6x9 := mtx.pinv(m_9x6)
 

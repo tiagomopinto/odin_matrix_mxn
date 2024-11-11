@@ -85,17 +85,17 @@ make_matrix :: proc(rows_num: int, cols_num: int) -> (mat: ^Matrix) {
 	return mat
 }
 
-make_matrix_from_3x3 :: proc(rows_3x3: ..[]^matrix[3, 3]f64) -> (mat: ^Matrix) {
+assign_matrix_from_3x3 :: proc(mat: ^Matrix, rows_3x3: ..[]^matrix[3, 3]f64) {
 
 	rows_num_3x3 := len(rows_3x3)
 	cols_num_3x3 := len(rows_3x3[0])
+
+	assert(mat.rows_num == 3 * rows_num_3x3 && mat.cols_num == 3 * cols_num_3x3)
 
 	for row_3x3 in rows_3x3 {
 
 		assert(cols_num_3x3 == len(row_3x3)) // check if all rows have the same length (rectangular or square matrix)
 	}
-
-	mat = make_matrix(3 * rows_num_3x3, 3 * cols_num_3x3)
 
 	for rows_3x3_idx in 0 ..< rows_num_3x3 {
 
@@ -115,8 +115,6 @@ make_matrix_from_3x3 :: proc(rows_3x3: ..[]^matrix[3, 3]f64) -> (mat: ^Matrix) {
 			}
 		}
 	}
-
-	return mat
 }
 
 copy_matrix :: proc(m1: ^Matrix, m2: ^Matrix) {
