@@ -180,7 +180,7 @@ assign_identity_matrix :: proc(mat: ^Matrix) {
 	}
 }
 
-trace :: proc(mat: ^Matrix) -> (res: f64) {
+get_trace :: proc(mat: ^Matrix) -> (res: f64) {
 
 	assert(mat.rows_num == mat.cols_num)
 
