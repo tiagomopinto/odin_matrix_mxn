@@ -261,16 +261,14 @@ mult :: proc(m1: ^Matrix, m2: ^Matrix, m_res: ^Matrix) {
 
 		for j in 0 ..< m2.cols_num {
 
-			set_val(m_res, i, j, 0.0)
+			sum: f64
 
 			for k in 0 ..< m1.cols_num {
 
-				val_new := get_val(m1, i, k) * get_val(m2, k, j)
-
-				val_old := get_val(m_res, i, j)
-
-				set_val(m_res, i, j, val_old + val_new)
+				sum += get_val(m1, i, k) * get_val(m2, k, j)
 			}
+
+			set_val(m_res, i, j, sum)
 		}
 	}
 }
