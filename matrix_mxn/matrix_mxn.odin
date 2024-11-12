@@ -249,6 +249,19 @@ subtract :: proc(m1: ^Matrix, m2: ^Matrix, m_res: ^Matrix) {
 	}
 }
 
+scale :: proc(m: ^Matrix, scalar: f64, m_res: ^Matrix) {
+
+	assert(m.rows_num == m_res.rows_num && m.cols_num == m_res.cols_num)
+
+	for i in 0 ..< m.rows_num {
+
+		for j in 0 ..< m.cols_num {
+
+			set_val(m_res, i, j, scalar * get_val(m, i, j))
+		}
+	}
+}
+
 mult :: proc(m1: ^Matrix, m2: ^Matrix, m_res: ^Matrix) {
 
 	assert(
