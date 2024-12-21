@@ -194,13 +194,46 @@ assign_matrix_from_std_matrices_3x3 :: proc(mat: ^Matrix, rows_3x3: ..[]^matrix[
 	}
 }
 
+// This procedure optimizes the use of cache by writting in blocks of 8x8 bytes.
+// If the size is not a multiple of 8, the remaining rows and columns are filled at the end.
 transpose :: proc(mat: ^Matrix, mat_t: ^Matrix) {
 
 	assert(mat.rows_num == mat_t.cols_num && mat.cols_num == mat_t.rows_num)
 
+	rows_rem_num := mat.rows_num % 8
+	cols_rem_num := mat.cols_num % 8
+
+	rows_no_rem_num := mat.rows_num - rows_rem_num
+	cols_no_rem_num := mat.cols_num - cols_rem_num
+
+	for i := 0; i < rows_no_rem_num; i += 8 {
+
+		for j := 0; j < cols_no_rem_num; j += 8 {
+
+			for k in 0 ..< 8 {
+
+				for l in 0 ..< 8 {
+
+					row_idx := i + k
+					col_idx := j + l
+
+					set_val(mat_t, col_idx, row_idx, get_val(mat, row_idx, col_idx))
+				}
+			}
+		}
+	}
+
 	for i in 0 ..< mat.rows_num {
 
-		for j in 0 ..< mat.cols_num {
+		for j in cols_no_rem_num ..< mat.cols_num {
+
+			set_val(mat_t, j, i, get_val(mat, i, j))
+		}
+	}
+
+	for i in rows_no_rem_num ..< mat.rows_num {
+
+		for j in 0 ..< cols_no_rem_num {
 
 			set_val(mat_t, j, i, get_val(mat, i, j))
 		}
@@ -419,3 +452,4 @@ pinv :: proc(mat_a_mxn: ^Matrix) -> (mat_inv_nxm: ^Matrix) {
 
 	return mat_inv_nxm
 }
+
