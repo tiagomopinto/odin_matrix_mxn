@@ -356,7 +356,7 @@ pinv :: proc(mat_a_mxn: ^Matrix) -> (mat_inv_nxm: ^Matrix) {
 
 	mult(mat_aux_nxm, mat_a_mxn, mat_aux1_nxn)
 
-	for k in 0 ..< 10 {
+	for _ in 0 ..< 10 {
 
 		for j in 0 ..< n {
 
