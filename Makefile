@@ -3,7 +3,7 @@ ifdef deb
 	OPT_FLAG := -debug
 else
 	TARGET_DIR := bin/release
-	OPT_FLAG := -o:aggressive -microarch:native -no-bounds-check -disable-assert -no-type-assert -vet
+	OPT_FLAG := -o:aggressive -microarch:native -no-bounds-check -disable-assert -no-type-assert -vet -strict-style
 endif
 
 TARGET := $(TARGET_DIR)/matrix
