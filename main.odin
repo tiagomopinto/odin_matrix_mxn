@@ -20,7 +20,7 @@ main :: proc() {
 
 	defer mtx.free_matrix(&m_9x6)
 
-	mtx.assign_matrix_from_std_matrices_3x3(m_9x6, {&m1, &m2}, {&m1, &m2}, {&m1, &m2})
+	mtx.assign_matrix_from_std_matrices_3x3(m_9x6, {m1, m2}, {m1, m2}, {m1, m2})
 
 	m_inv_6x9 := mtx.pinv(m_9x6)
 
